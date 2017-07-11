@@ -1,3 +1,11 @@
+melon_data/
+test/
+7-9-17/
+7-10-17/
+backup/
+results/
+settings.json
+
 *.o
 *.dSYM
 *.csv
@@ -16,8 +24,13 @@ convnet/
 decaf/
 submission/
 cfg/
-darknet
+darknet*
 .fuse*
+*.avi
+*.weights
+*.list
+*.a
+*.so
 
 # OS Generated #
 .DS_Store*
