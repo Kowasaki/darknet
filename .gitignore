@@ -1,3 +1,4 @@
+# My own ignores --Kowasaki
 melon_data/
 test/
 7-9-17/
@@ -5,6 +6,9 @@ test/
 backup/
 results/
 settings.json
+VOCdevkit/
+2012_*
+VOCtrainval_11*
 
 *.o
 *.dSYM
