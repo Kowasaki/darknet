@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <dirent.h> 
 
 extern void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int top);
 extern void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh, float hier_thresh, char *outfile, int fullscreen);
@@ -442,6 +443,51 @@ int main(int argc, char **argv)
         char *outfile = find_char_arg(argc, argv, "-out", 0);
         int fullscreen = find_arg(argc, argv, "-fullscreen");
         test_detector("cfg/melon.data", argv[2], argv[3], filename, thresh, .5, outfile, fullscreen);
+    } else if (0 == strcmp(argv[1], "dirdetect")){
+        DIR           *d;
+        struct dirent *dir;
+        const char *dirname = (argc > 4) ? argv[4]: 0; 
+        if (dirname[strlen(dirname)-1] != '/'){
+            printf("Is the path a directory? Please append \"/\" if so\n");
+            return 0;
+        }
+        d = opendir(dirname);
+        if (d)
+        {
+            while ((dir = readdir(d)) != NULL)
+            {
+                const char *dot = strrchr(dir->d_name, '.');
+                if(strstr(dot, ".jpg")){
+                    printf("filename: %s\n", dir->d_name);
+                    // char* fixeddir;
+                    // if (dirname[strlen(dirname)-1] != '/'){
+                    //     fixeddir[strlen(dirname) + 1];
+                    //     strcpy(fixeddir, dirname);
+                    //     strcat(fixeddir, "/");
+                    //     printf("fixed dir name: %s", fixeddir);
+                    // } else {
+                    //     fixeddir[strlen(dirname)];
+                    //     strcpy(fixeddir, dirname);
+                    //     printf("normal dir name: %s", fixeddir);
+                    // }
+                    // char filepath[strlen(fixeddir)+ strlen(dir->d_name) +1];
+                    // char outfile[strlen(fixeddir) + strlen("pred_") + strlen(dir->d_name) +1];
+                    char filepath[strlen(dirname)+ strlen(dir->d_name) +1];
+                    char outfile[strlen(dirname) + strlen("pred_") + strlen(dir->d_name) +1];
+
+                    strcpy(outfile, dirname);
+                    strcat(outfile, "pred_");
+                    strcat(outfile, dir->d_name);
+                    strcpy(filepath, dirname);
+                    strcat(filepath, dir->d_name);
+                    float thresh = find_float_arg(argc, argv, "-thresh", .24);
+                    int fullscreen = find_arg(argc, argv, "-fullscreen");
+                    test_detector("cfg/melon.data", argv[2], argv[3], filepath, thresh, .5, outfile, fullscreen);
+                }
+            }
+            closedir(d);
+        }
+
     } else if (0 == strcmp(argv[1], "cifar")){
         run_cifar(argc, argv);
     } else if (0 == strcmp(argv[1], "go")){
