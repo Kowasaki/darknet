@@ -439,18 +439,18 @@ int main(int argc, char **argv)
         run_detector(argc, argv);
     } else if (0 == strcmp(argv[1], "detect")){
         float thresh = find_float_arg(argc, argv, "-thresh", .24);
-        char *filename = (argc > 4) ? argv[4]: 0;
+        char *filename = (argc > 5) ? argv[5]: 0;
         char *outfile = find_char_arg(argc, argv, "-out", 0);
         int fullscreen = find_arg(argc, argv, "-fullscreen");
-        test_detector("cfg/melon.data", argv[2], argv[3], filename, thresh, .5, outfile, fullscreen);
+        // argv[4] = "cfg/melon.data"
+        test_detector(argv[4], argv[2], argv[3], filename, thresh, .5, outfile, fullscreen);
     } else if (0 == strcmp(argv[1], "dirdetect")){
         float thresh = find_float_arg(argc, argv, "-thresh", .24);
-        char *folder = (argc > 4) ? argv[4]: 0;
+        char *folder = (argc > 5) ? argv[5]: 0;
         char *outfolder = find_char_arg(argc, argv, "-out", 0);
         int fullscreen = find_arg(argc, argv, "-fullscreen");
-
-        test_dir_detector("cfg/melon.data", argv[2], argv[3], folder, thresh, .5, outfolder, fullscreen);
-
+        // argv[4] = "cfg/melon.data"
+        test_dir_detector(argv[4], argv[2], argv[3], folder, thresh, .5, outfolder, fullscreen);
     } else if (0 == strcmp(argv[1], "cifar")){
         run_cifar(argc, argv);
     } else if (0 == strcmp(argv[1], "go")){
