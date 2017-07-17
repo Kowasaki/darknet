@@ -41,6 +41,8 @@ static float *last_avg;
 static float *avg;
 double demo_time;
 
+char out_buffer[256];
+
 double get_wall_time()
 {
     struct timeval time;
@@ -133,8 +135,32 @@ void *detect_loop(void *ptr)
     }
 }
 
-void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char **names, int classes, int delay, char *prefix, int avg_frames, float hier, int w, int h, int frames, int fullscreen)
+void save_vid(IplImage *disp)
 {
+    CvSize size;
+    {
+        size.width = disp->width, size.height = disp->height;
+    }
+
+    static CvVideoWriter* output_video = NULL;    // cv::VideoWriter output_video;
+    if (output_video == NULL)
+    {
+        printf("\n SRC output_video = %p \n", output_video);
+        
+        const char* output_name = out_buffer;
+        //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('H', '2', '6', '4'), 25, size, 1);
+        output_video = cvCreateVideoWriter(output_name, CV_FOURCC('D', 'I', 'V', 'X'), 25, size, 1);
+        //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('M', 'J', 'P', 'G'), 25, size, 1);
+        printf("\n cvCreateVideoWriter, DST output_video = %p  \n", output_video);
+    }
+
+    cvWriteFrame(output_video, disp);
+    printf("\n cvWriteFrame \n");
+}
+
+void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char *outfile, char **names, int classes, int delay, char *prefix, int avg_frames, float hier, int w, int h, int frames, int fullscreen)
+{
+    sprintf(out_buffer, outfile);
     demo_delay = delay;
     demo_frame = avg_frames;
     predictions = calloc(demo_frame, sizeof(float*));
@@ -231,9 +257,10 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
         pthread_join(detect_thread, 0);
         ++count;
     }
+    free(out_buffer);
 }
 #else
-void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char **names, int classes, int delay, char *prefix, int avg, float hier, int w, int h, int frames, int fullscreen)
+void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char *outfile, char **names, int classes, int delay, char *prefix, int avg, float hier, int w, int h, int frames, int fullscreen)
 {
     fprintf(stderr, "Demo needs OpenCV for webcam images.\n");
 }
