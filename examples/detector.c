@@ -654,12 +654,13 @@ void test_dir_detector(char *datacfg, char *cfgfile, char *weightfile, char *fol
         printf("Is the input path a directory? Please append \"/\" if so\n");
         return;
     }
-    if (strlen(outfolder) > 0 && outfolder[strlen(outfolder)-1] != '/'){
+    
+    if (outfolder == NULL || strlen(outfolder) <= 0){
+        outfolder = "./out/";
+    } else if (outfolder[strlen(outfolder)-1] != '/'){
         printf("Is the output path a directory? Please append \"/\" if so\n");
         return;
-    } else if (strlen(outfolder) <= 0){
-        outfolder = "./out/";
-    }
+    } 
 
     struct stat st = {0};
     if (stat(outfolder, &st) == -1) {
