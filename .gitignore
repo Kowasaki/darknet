@@ -5,6 +5,7 @@ test/
 7-10-17/
 backup/
 results/
+show/
 settings.json
 VOCdevkit/
 2012_*

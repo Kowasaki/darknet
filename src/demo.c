@@ -97,6 +97,7 @@ void *fetch_in_thread(void *ptr)
 void *display_in_thread(void *ptr)
 {
     show_image_cv(buff[(buff_index + 1)%3], "Demo", ipl);
+    save_vid(ipl);
     int c = cvWaitKey(1);
     if (c != -1) c = c%256;
     if (c == 10){
