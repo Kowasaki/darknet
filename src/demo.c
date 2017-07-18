@@ -148,7 +148,7 @@ void save_vid(IplImage *disp)
     {
         printf("\n SRC output_video = %p \n", output_video);
         
-        const char* output_name = out_buffer;
+        const char* output_name = (strlen(out_buffer) > 0) ? out_buffer : "output.avi";
         //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('H', '2', '6', '4'), 25, size, 1);
         output_video = cvCreateVideoWriter(output_name, CV_FOURCC('D', 'I', 'V', 'X'), 25, size, 1);
         //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('M', 'J', 'P', 'G'), 25, size, 1);
