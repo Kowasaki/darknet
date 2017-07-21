@@ -656,7 +656,7 @@ void test_dir_detector(char *datacfg, char *cfgfile, char *weightfile, char *fol
     }
     
     if (outfolder == NULL || strlen(outfolder) <= 0){
-        outfolder = "./out/";
+        outfolder = "./out_img/";
     } else if (outfolder[strlen(outfolder)-1] != '/'){
         printf("Is the output path a directory? Please append \"/\" if so\n");
         return;

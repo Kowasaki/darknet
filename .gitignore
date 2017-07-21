@@ -6,9 +6,12 @@ test/
 backup/
 results/
 show/
+out_img/
+out_vid/
 settings.json
 VOCdevkit/
-2012_*
+2012*
+*.mp4
 VOCtrainval_11*
 
 *.o

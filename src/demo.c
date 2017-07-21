@@ -148,7 +148,7 @@ void save_vid(IplImage *disp)
     {
         printf("\n SRC output_video = %p \n", output_video);
         
-        const char* output_name = (strlen(out_buffer) > 0) ? out_buffer : "output.avi";
+        const char* output_name = (strlen(out_buffer) > 0) ? out_buffer : "./out_vid/output.avi";
         //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('H', '2', '6', '4'), 25, size, 1);
         output_video = cvCreateVideoWriter(output_name, CV_FOURCC('D', 'I', 'V', 'X'), 25, size, 1);
         //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('M', 'J', 'P', 'G'), 25, size, 1);
@@ -161,7 +161,6 @@ void save_vid(IplImage *disp)
 
 void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char *outfile, char **names, int classes, int delay, char *prefix, int avg_frames, float hier, int w, int h, int frames, int fullscreen)
 {
-    sprintf(out_buffer, outfile);
     demo_delay = delay;
     demo_frame = avg_frames;
     predictions = calloc(demo_frame, sizeof(float*));
@@ -171,6 +170,18 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
     demo_classes = classes;
     demo_thresh = thresh;
     demo_hier = hier;
+
+    // sprintf(out_buffer, outfile);
+    struct stat st = {0};
+    char* outfolder ="./out_vid/";
+    if(stat(outfolder, &st) == -1){
+        mkdir(outfolder, 0700);
+    }
+    if(outfile != NULL){
+        strcpy(out_buffer, outfolder);
+        strcat(out_buffer, outfile);
+    } 
+
     printf("Demo\n");
     net = parse_network_cfg(cfgfile);
     if(weightfile){
@@ -258,7 +269,7 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
         pthread_join(detect_thread, 0);
         ++count;
     }
-    free(out_buffer);
+    out_buffer[0] = '\0';
 }
 #else
 void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char *outfile, char **names, int classes, int delay, char *prefix, int avg, float hier, int w, int h, int frames, int fullscreen)
