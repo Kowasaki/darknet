@@ -6,7 +6,7 @@
 
 extern void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int top);
 extern void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh, float hier_thresh, char *outfile, int fullscreen);
-extern void test_dir_detector(char *datacfg, char *cfgfile, char *weightfile, char *folder, float thresh, float hier_thresh, char *outfolder, int fullscreen);
+// extern void test_dir_detector(char *datacfg, char *cfgfile, char *weightfile, char *folder, float thresh, float hier_thresh, char *outfolder, int fullscreen);
 extern void run_yolo(int argc, char **argv);
 extern void run_detector(int argc, char **argv);
 extern void run_coco(int argc, char **argv);
@@ -446,7 +446,8 @@ int main(int argc, char **argv)
         char *outfolder = find_char_arg(argc, argv, "-out", 0);
         int fullscreen = find_arg(argc, argv, "-fullscreen");
         // argv[4] = "cfg/melon.data"
-        test_dir_detector(argv[4], argv[2], argv[3], folder, thresh, .5, outfolder, fullscreen);
+        // TODO: Get save video working again
+        // test_dir_detector(argv[4], argv[2], argv[3], folder, thresh, .5, outfolder, fullscreen);
     } else if (0 == strcmp(argv[1], "cifar")){
         run_cifar(argc, argv);
     } else if (0 == strcmp(argv[1], "go")){

@@ -195,7 +195,8 @@ void save_vid(IplImage *disp)
     {
         printf("\n SRC output_video = %p \n", output_video);
         
-        const char* output_name = (strlen(out_buffer) > 0) ? out_buffer : "./out_vid/output.avi";
+        // const char* output_name = (strlen(out_buffer) > 0) ? out_buffer : "./out_vid/output.avi";
+        const char* output_name = "./out_vid/output.avi";
         //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('H', '2', '6', '4'), 25, size, 1);
         output_video = cvCreateVideoWriter(output_name, CV_FOURCC('D', 'I', 'V', 'X'), 25, size, 1);
         //output_video = cvCreateVideoWriter(output_name, CV_FOURCC('M', 'J', 'P', 'G'), 25, size, 1);
@@ -208,6 +209,7 @@ void save_vid(IplImage *disp)
 
 void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const char *filename, char *outfile, char **names, int classes, int delay, char *prefix, int avg_frames, float hier, int w, int h, int frames, int fullscreen)
 {
+    // TODO: make save_vid work again. 
     //demo_frame = avg_frames;
     image **alphabet = load_alphabet();
     demo_names = names;
@@ -222,10 +224,10 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
     if(stat(outfolder, &st) == -1){
         mkdir(outfolder, 0700);
     }
-    if(outfile != NULL){
-        strcpy(out_buffer, outfolder);
-        strcat(out_buffer, outfile);
-    } 
+    // if(outfile != NULL){
+    //     strcpy(out_buffer, outfolder);
+    //     strcat(out_buffer, outfile);
+    // } 
 
     printf("Demo\n");
     net = load_network(cfgfile, weightfile, 0);
@@ -300,7 +302,7 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
         pthread_join(detect_thread, 0);
         ++count;
     }
-    out_buffer[0] = '\0';
+    // out_buffer[0] = '\0';
 }
 
 /*

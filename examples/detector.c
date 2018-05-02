@@ -625,100 +625,98 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     }
 }
 
-void test_dir_detector(char *datacfg, char *cfgfile, char *weightfile, char *folder, float thresh, float hier_thresh, char *outfolder, int fullscreen)
-{
-    if (folder[strlen(folder)-1] != '/'){
-        printf("Is the input path a directory? Please append \"/\" if so\n");
-        return;
-    }
+// void test_dir_detector(char *datacfg, char *cfgfile, char *weightfile, char *folder, float thresh, float hier_thresh, char *outfolder, int fullscreen)
+// {
+//     if (folder[strlen(folder)-1] != '/'){
+//         printf("Is the input path a directory? Please append \"/\" if so\n");
+//         return;
+//     }
     
-    if (outfolder == NULL || strlen(outfolder) <= 0){
-        outfolder = "./out_img/";
-    } else if (outfolder[strlen(outfolder)-1] != '/'){
-        printf("Is the output path a directory? Please append \"/\" if so\n");
-        return;
-    } 
+//     if (outfolder == NULL || strlen(outfolder) <= 0){
+//         outfolder = "./out_img/";
+//     } else if (outfolder[strlen(outfolder)-1] != '/'){
+//         printf("Is the output path a directory? Please append \"/\" if so\n");
+//         return;
+//     } 
 
-    struct stat st = {0};
-    if (stat(outfolder, &st) == -1) {
-        mkdir(outfolder, 0700);
-    }
+//     struct stat st = {0};
+//     if (stat(outfolder, &st) == -1) {
+//         mkdir(outfolder, 0700);
+//     }
 
-    list *options = read_data_cfg(datacfg);
-    char *name_list = option_find_str(options, "names", "data/names.list");
-    char **names = get_labels(name_list);
+//     list *options = read_data_cfg(datacfg);
+//     char *name_list = option_find_str(options, "names", "data/names.list");
+//     char **names = get_labels(name_list);
 
-    image **alphabet = load_alphabet();
-    network net = parse_network_cfg(cfgfile);
-    if(weightfile){
-        load_weights(&net, weightfile);
-    }
-    set_batch_network(&net, 1);
-    srand(2222222);
-    double time;
-    int j;
-    float nms=.3;
+//     image **alphabet = load_alphabet();
+//     network *net = load_network(cfgfile, weightfile, 0);
+//     set_batch_network(net, 1);
+//     srand(2222222);
+//     double time;
+//     int j;
+//     float nms=.3;
 
-    DIR           *d;
-    struct dirent *dir;
-    d = opendir(folder);
-    if (d)
-    {
-        while ((dir = readdir(d)) != NULL)
-        {
-            const char *dot = strrchr(dir->d_name, '.');
+//     DIR           *d;
+//     struct dirent *dir;
+//     d = opendir(folder);
+//     if (d)
+//     {
+//         while ((dir = readdir(d)) != NULL)
+//         {
+//             const char *dot = strrchr(dir->d_name, '.');
 
-            if(strstr(dot, ".jpg")){
-                printf("filename: %s\n", dir->d_name);
-                char infile[strlen(folder)+ strlen(dir->d_name) +1];
-                char outfile[strlen(outfolder) + strlen("pred_") + strlen(dir->d_name) +1];
+//             if(strstr(dot, ".jpg")){
+//                 printf("filename: %s\n", dir->d_name);
+//                 char infile[strlen(folder)+ strlen(dir->d_name) +1];
+//                 char outfile[strlen(outfolder) + strlen("pred_") + strlen(dir->d_name) +1];
 
-                strcpy(outfile, outfolder);
-                strcat(outfile, "pred_");
-                strcat(outfile, dir->d_name);
+//                 strcpy(outfile, outfolder);
+//                 strcat(outfile, "pred_");
+//                 strcat(outfile, dir->d_name);
 
-                strcpy(infile, folder);
-                strcat(infile, dir->d_name);
+//                 strcpy(infile, folder);
+//                 strcat(infile, dir->d_name);
 
-                image im = load_image_color(infile,0,0);
-                image sized = letterbox_image(im, net.w, net.h);
-                //image sized = resize_image(im, net.w, net.h);
-                //image sized2 = resize_max(im, net.w);
-                //image sized = crop_image(sized2, -((net.w - sized2.w)/2), -((net.h - sized2.h)/2), net.w, net.h);
-                //resize_network(&net, sized.w, sized.h);
-                layer l = net.layers[net.n-1];
+//                 image im = load_image_color(infile,0,0);
+//                 image sized = letterbox_image(im, net->w, net->h);
+//                 //image sized = resize_image(im, net.w, net.h);
+//                 //image sized2 = resize_max(im, net.w);
+//                 //image sized = crop_image(sized2, -((net.w - sized2.w)/2), -((net.h - sized2.h)/2), net.w, net.h);
+//                 //resize_network(&net, sized.w, sized.h);
+//                 layer l = net->layers[net->n-1];
 
-                box *boxes = calloc(l.w*l.h*l.n, sizeof(box));
-                float **probs = calloc(l.w*l.h*l.n, sizeof(float *));
-                // probs stores the probabilities of possible labels in image; maps to nums index; float prob = probs[i][class]
-                for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = calloc(l.classes + 1, sizeof(float *));
-                float **masks = 0;
-                if (l.coords > 4){
-                    masks = calloc(l.w*l.h*l.n, sizeof(float*));
-                    for(j = 0; j < l.w*l.h*l.n; ++j) masks[j] = calloc(l.coords-4, sizeof(float *));
-                }
+//                 box *boxes = calloc(l.w*l.h*l.n, sizeof(box));
+//                 float **probs = calloc(l.w*l.h*l.n, sizeof(float *));
+//                 // probs stores the probabilities of possible labels in image; maps to nums index; float prob = probs[i][class]
+//                 for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = calloc(l.classes + 1, sizeof(float *));
+//                 float **masks = 0;
+//                 if (l.coords > 4){
+//                     masks = calloc(l.w*l.h*l.n, sizeof(float*));
+//                     for(j = 0; j < l.w*l.h*l.n; ++j) masks[j] = calloc(l.coords-4, sizeof(float *));
+//                 }
 
-                float *X = sized.data;
-                time=what_time_is_it_now();
-                network_predict(net, X);
-                printf("%s: Predicted in %f seconds.\n", outfile, what_time_is_it_now()-time);
-                get_region_boxes(l, im.w, im.h, net.w, net.h, thresh, probs, boxes, masks, 0, 0, hier_thresh, 1);
-                if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
-                //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
-                // boxes stores the dimensions of the boundray boxes; maps to nums index; Box b = boxes[i]
-                draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, masks, names, alphabet, l.classes);
-                save_image(im, outfile);
-                
-                free_image(im);
-                free_image(sized);
-                free(boxes);
-                free_ptrs((void **)probs, l.w*l.h*l.n);
+//         float *X = sized.data;
+//         time=what_time_is_it_now();
+//         network_predict(net, X);
+//         // printf("%s: Predicted in %f seconds.\n", input, what_time_is_it_now()-time);
+//         int nboxes = 0;
+//         detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes);
+//         //printf("%d\n", nboxes);
+//         //if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
+//         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+//         draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
+//         free_detections(dets, nboxes);
+//         if(outfile){
+//             save_image(im, outfile);
+//         }
+//         else{
+//             save_image(im, "predictions");
 
-            } 
-        }
-        closedir(d);
-    }
-}
+//             } 
+//         }
+//         closedir(d);
+//     }
+// }
 
 /*
 void censor_detector(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename, int class, float thresh, int skip)
